@@ -1,0 +1,724 @@
+{% doc %}
+  @prompt
+    create a blog post section with the ability to have a mobile image option / an intro section followed by four boxes - one each for Servings / Prep time / Cook time / Total time then i need boxes for ingredinest (upto 20 each one only appearing if there is a text entry
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-recipe-block-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .ai-recipe-hero-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    margin-bottom: 40px;
+  }
+
+  .ai-recipe-hero-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: {{ block.settings.image_border_radius }}px;
+  }
+
+  .ai-recipe-hero-image-{{ ai_gen_id }} img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: {{ block.settings.image_border_radius }}px;
+  }
+
+  .ai-recipe-hero-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: {{ block.settings.image_border_radius }}px;
+    position: relative;
+  }
+
+  .ai-recipe-hero-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-recipe-empty-state-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .ai-recipe-mobile-image-{{ ai_gen_id }} {
+    display: none;
+  }
+
+  .ai-recipe-intro-{{ ai_gen_id }} {
+    margin-bottom: 32px;
+  }
+
+  .ai-recipe-intro-{{ ai_gen_id }} h1 {
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 16px 0;
+    text-transform: {{ block.settings.heading_text_transform }};
+    letter-spacing: {{ block.settings.heading_letter_spacing }}%;
+  }
+
+  .ai-recipe-intro-{{ ai_gen_id }} .ai-recipe-description-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, {{ block.settings.body_font.fallback_families }};
+    font-weight: {{ block.settings.body_font.weight }};
+    font-size: {{ block.settings.body_size }}px;
+    color: {{ block.settings.text_color }};
+    line-height: 1.6;
+  }
+
+  .ai-recipe-meta-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .ai-recipe-meta-box-{{ ai_gen_id }} {
+    background-color: {{ block.settings.meta_box_background }};
+    border: 1px solid {{ block.settings.meta_box_border_color }};
+    border-radius: {{ block.settings.meta_box_border_radius }}px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .ai-recipe-meta-label-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: 12px;
+    color: {{ block.settings.meta_label_color }};
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .ai-recipe-meta-value-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, {{ block.settings.body_font.fallback_families }};
+    font-weight: {{ block.settings.body_font.weight }};
+    font-size: 24px;
+    color: {{ block.settings.text_color }};
+    font-weight: 600;
+  }
+
+  .ai-recipe-ingredients-{{ ai_gen_id }} {
+    background-color: {{ block.settings.ingredients_background }};
+    border: 1px solid {{ block.settings.ingredients_border_color }};
+    border-radius: {{ block.settings.ingredients_border_radius }}px;
+    padding: 32px;
+  }
+
+  .ai-recipe-ingredients-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: {{ block.settings.section_heading_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 24px 0;
+    text-transform: {{ block.settings.heading_text_transform }};
+    letter-spacing: {{ block.settings.heading_letter_spacing }}%;
+  }
+
+  .ai-recipe-ingredients-list-{{ ai_gen_id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ai-recipe-ingredient-item-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, {{ block.settings.body_font.fallback_families }};
+    font-weight: {{ block.settings.body_font.weight }};
+    font-size: {{ block.settings.body_size }}px;
+    color: {{ block.settings.text_color }};
+    padding: 12px 0;
+    border-bottom: 1px solid {{ block.settings.ingredient_divider_color }};
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .ai-recipe-ingredient-item-{{ ai_gen_id }}:last-child {
+    border-bottom: none;
+  }
+
+  .ai-recipe-ingredient-item-{{ ai_gen_id }}::before {
+    content: "•";
+    color: {{ block.settings.bullet_color }};
+    font-weight: bold;
+    font-size: 20px;
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-recipe-hero-desktop-{{ ai_gen_id }} {
+      display: none;
+    }
+
+    .ai-recipe-mobile-image-{{ ai_gen_id }} {
+      display: block;
+    }
+
+    .ai-recipe-meta-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .ai-recipe-meta-box-{{ ai_gen_id }} {
+      padding: 16px;
+    }
+
+    .ai-recipe-meta-value-{{ ai_gen_id }} {
+      font-size: 20px;
+    }
+
+    .ai-recipe-intro-{{ ai_gen_id }} h1 {
+      font-size: {{ block.settings.heading_size | times: 0.7 }}px;
+    }
+
+    .ai-recipe-ingredients-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.section_heading_size | times: 0.8 }}px;
+    }
+
+    .ai-recipe-ingredients-{{ ai_gen_id }} {
+      padding: 24px;
+    }
+  }
+{% endstyle %}
+
+<recipe-block-{{ ai_gen_id }} class="ai-recipe-block-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-recipe-hero-{{ ai_gen_id }}">
+    <div class="ai-recipe-hero-desktop-{{ ai_gen_id }}">
+      {% if block.settings.hero_image %}
+        <div class="ai-recipe-hero-image-{{ ai_gen_id }}">
+          <img
+            src="{{ block.settings.hero_image | image_url: width: 2000 }}"
+            alt="{{ block.settings.hero_image.alt | escape }}"
+            loading="lazy"
+            width="{{ block.settings.hero_image.width }}"
+            height="{{ block.settings.hero_image.height }}"
+          >
+        </div>
+      {% else %}
+        <div class="ai-recipe-hero-placeholder-{{ ai_gen_id }}">
+          {{ 'hero-apparel-1' | placeholder_svg_tag }}
+          <div class="ai-recipe-empty-state-{{ ai_gen_id }}">
+            Add a hero image
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="ai-recipe-mobile-image-{{ ai_gen_id }}">
+      {% if block.settings.mobile_image %}
+        <div class="ai-recipe-hero-image-{{ ai_gen_id }}">
+          <img
+            src="{{ block.settings.mobile_image | image_url: width: 1000 }}"
+            alt="{{ block.settings.mobile_image.alt | escape }}"
+            loading="lazy"
+            width="{{ block.settings.mobile_image.width }}"
+            height="{{ block.settings.mobile_image.height }}"
+          >
+        </div>
+      {% elsif block.settings.hero_image %}
+        <div class="ai-recipe-hero-image-{{ ai_gen_id }}">
+          <img
+            src="{{ block.settings.hero_image | image_url: width: 1000 }}"
+            alt="{{ block.settings.hero_image.alt | escape }}"
+            loading="lazy"
+            width="{{ block.settings.hero_image.width }}"
+            height="{{ block.settings.hero_image.height }}"
+          >
+        </div>
+      {% else %}
+        <div class="ai-recipe-hero-placeholder-{{ ai_gen_id }}">
+          {{ 'hero-apparel-1' | placeholder_svg_tag }}
+          <div class="ai-recipe-empty-state-{{ ai_gen_id }}">
+            Add a mobile image
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="ai-recipe-intro-{{ ai_gen_id }}">
+    {% if block.settings.recipe_title != blank %}
+      <h1>{{ block.settings.recipe_title }}</h1>
+    {% endif %}
+    {% if block.settings.recipe_description != blank %}
+      <div class="ai-recipe-description-{{ ai_gen_id }}">
+        {{ block.settings.recipe_description }}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="ai-recipe-meta-grid-{{ ai_gen_id }}">
+    <div class="ai-recipe-meta-box-{{ ai_gen_id }}">
+      <div class="ai-recipe-meta-label-{{ ai_gen_id }}">Servings</div>
+      <div class="ai-recipe-meta-value-{{ ai_gen_id }}">{{ block.settings.servings }}</div>
+    </div>
+    <div class="ai-recipe-meta-box-{{ ai_gen_id }}">
+      <div class="ai-recipe-meta-label-{{ ai_gen_id }}">Prep Time</div>
+      <div class="ai-recipe-meta-value-{{ ai_gen_id }}">{{ block.settings.prep_time }}</div>
+    </div>
+    <div class="ai-recipe-meta-box-{{ ai_gen_id }}">
+      <div class="ai-recipe-meta-label-{{ ai_gen_id }}">Cook Time</div>
+      <div class="ai-recipe-meta-value-{{ ai_gen_id }}">{{ block.settings.cook_time }}</div>
+    </div>
+    <div class="ai-recipe-meta-box-{{ ai_gen_id }}">
+      <div class="ai-recipe-meta-label-{{ ai_gen_id }}">Total Time</div>
+      <div class="ai-recipe-meta-value-{{ ai_gen_id }}">{{ block.settings.total_time }}</div>
+    </div>
+  </div>
+
+  <div class="ai-recipe-ingredients-{{ ai_gen_id }}">
+    <h2 class="ai-recipe-ingredients-title-{{ ai_gen_id }}">Ingredients</h2>
+    <ul class="ai-recipe-ingredients-list-{{ ai_gen_id }}">
+      {% if block.settings.ingredient_1 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_1 }}</li>
+      {% endif %}
+      {% if block.settings.ingredient_2 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_2 }}</li>
+      {% endif %}
+      {% if block.settings.ingredient_3 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_3 }}</li>
+      {% endif %}
+      {% if block.settings.ingredient_4 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_4 }}</li>
+      {% endif %}
+      {% if block.settings.ingredient_5 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_5 }}</li>
+      {% endif %}
+      {% if block.settings.ingredient_6 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_6 }}</li>
+      {% endif %}
+      {% if block.settings.ingredient_7 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_7 }}</li>
+      {% endif %}
+      {% if block.settings.ingredient_8 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_8 }}</li>
+      {% endif %}
+      {% if block.settings.ingredient_9 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_9 }}</li>
+      {% endif %}
+      {% if block.settings.ingredient_10 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_10 }}</li>
+      {% endif %}
+      {% if block.settings.ingredient_11 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_11 }}</li>
+      {% endif %}
+      {% if block.settings.ingredient_12 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_12 }}</li>
+      {% endif %}
+      {% if block.settings.ingredient_13 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_13 }}</li>
+      {% endif %}
+      {% if block.settings.ingredient_14 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_14 }}</li>
+      {% endif %}
+      {% if block.settings.ingredient_15 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_15 }}</li>
+      {% endif %}
+      {% if block.settings.ingredient_16 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_16 }}</li>
+      {% endif %}
+      {% if block.settings.ingredient_17 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_17 }}</li>
+      {% endif %}
+      {% if block.settings.ingredient_18 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_18 }}</li>
+      {% endif %}
+      {% if block.settings.ingredient_19 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_19 }}</li>
+      {% endif %}
+      {% if block.settings.ingredient_20 != blank %}
+        <li class="ai-recipe-ingredient-item-{{ ai_gen_id }}">{{ block.settings.ingredient_20 }}</li>
+      {% endif %}
+    </ul>
+  </div>
+</recipe-block-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class RecipeBlock{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+      }
+    }
+
+    customElements.define('recipe-block-{{ ai_gen_id }}', RecipeBlock{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Recipe blog post",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero images"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Desktop image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile image"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Image border radius",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Introduction"
+    },
+    {
+      "type": "text",
+      "id": "recipe_title",
+      "label": "Recipe title",
+      "default": "Wagyu Beef Wellington"
+    },
+    {
+      "type": "richtext",
+      "id": "recipe_description",
+      "label": "Description",
+      "default": "<p>An elegant and luxurious dish featuring premium Wagyu beef wrapped in golden puff pastry with a rich mushroom duxelles.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Recipe details"
+    },
+    {
+      "type": "text",
+      "id": "servings",
+      "label": "Servings",
+      "default": "4"
+    },
+    {
+      "type": "text",
+      "id": "prep_time",
+      "label": "Prep time",
+      "default": "30 min"
+    },
+    {
+      "type": "text",
+      "id": "cook_time",
+      "label": "Cook time",
+      "default": "45 min"
+    },
+    {
+      "type": "text",
+      "id": "total_time",
+      "label": "Total time",
+      "default": "75 min"
+    },
+    {
+      "type": "header",
+      "content": "Ingredients"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_1",
+      "label": "Ingredient 1",
+      "default": "800g Wagyu beef fillet"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_2",
+      "label": "Ingredient 2",
+      "default": "500g puff pastry"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_3",
+      "label": "Ingredient 3",
+      "default": "300g mushrooms, finely chopped"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_4",
+      "label": "Ingredient 4",
+      "default": "2 shallots, finely diced"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_5",
+      "label": "Ingredient 5",
+      "default": "3 cloves garlic, minced"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_6",
+      "label": "Ingredient 6"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_7",
+      "label": "Ingredient 7"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_8",
+      "label": "Ingredient 8"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_9",
+      "label": "Ingredient 9"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_10",
+      "label": "Ingredient 10"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_11",
+      "label": "Ingredient 11"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_12",
+      "label": "Ingredient 12"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_13",
+      "label": "Ingredient 13"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_14",
+      "label": "Ingredient 14"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_15",
+      "label": "Ingredient 15"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_16",
+      "label": "Ingredient 16"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_17",
+      "label": "Ingredient 17"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_18",
+      "label": "Ingredient 18"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_19",
+      "label": "Ingredient 19"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_20",
+      "label": "Ingredient 20"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "montserrat_n6"
+    },
+    {
+      "type": "select",
+      "id": "heading_text_transform",
+      "label": "Heading casing",
+      "options": [
+        {
+          "value": "none",
+          "label": "Normal"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        },
+        {
+          "value": "lowercase",
+          "label": "Lowercase"
+        }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "heading_letter_spacing",
+      "label": "Heading letter spacing",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "%",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 24,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Main heading size",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "section_heading_size",
+      "min": 18,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Section heading size",
+      "default": 28
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body font",
+      "default": "nunito_sans_n4"
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Body text size",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "meta_box_background",
+      "label": "Meta box background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "meta_box_border_color",
+      "label": "Meta box border",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "meta_label_color",
+      "label": "Meta label color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "meta_box_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Meta box border radius",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "ingredients_background",
+      "label": "Ingredients background",
+      "default": "#f9f9f9"
+    },
+    {
+      "type": "color",
+      "id": "ingredients_border_color",
+      "label": "Ingredients border",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "range",
+      "id": "ingredients_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Ingredients border radius",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "ingredient_divider_color",
+      "label": "Ingredient divider",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "bullet_color",
+      "label": "Bullet color",
+      "default": "#000000"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Recipe blog post"
+    }
+  ]
+}
+{% endschema %}

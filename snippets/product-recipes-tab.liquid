@@ -1,0 +1,134 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+PRODUCT RECIPES TAB
+----------------------------------------------------------------------------------------------------------------------
+Renders recipe article cards from the product's custom.recipes metafield (list.metaobject_reference).
+Each metaobject has a blog_url field containing the full article URL.
+
+Supported variables:
+* recipes: the metafield value (list of metaobject references with blog_url field)
+* section_id: unique section identifier for scoping styles
+----------------------------------------------------------------------------------------------------------------------
+{%- endcomment -%}
+
+{%- if recipes != blank -%}
+  <div class="product-recipes-tab" id="{{ section_id }}-recipes">
+    <style>
+      #{{ section_id }}-recipes .product-recipes-tab__grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+      }
+
+      #{{ section_id }}-recipes .product-recipes-tab__card {
+        border-radius: 8px;
+        overflow: hidden;
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        color: inherit;
+        cursor: pointer;
+      }
+
+      #{{ section_id }}-recipes .product-recipes-tab__image {
+        position: relative;
+        width: 100%;
+        padding-top: 66.66%;
+        overflow: hidden;
+        background: #f5f5f5;
+        border-radius: 8px;
+      }
+
+      #{{ section_id }}-recipes .product-recipes-tab__image img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      #{{ section_id }}-recipes .product-recipes-tab__image .product-recipes-tab__placeholder {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 2rem;
+        color: #ccc;
+      }
+
+      #{{ section_id }}-recipes .product-recipes-tab__title {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 16px;
+        line-height: 1.4;
+      }
+
+      @media screen and (max-width: 699px) {
+        #{{ section_id }}-recipes .product-recipes-tab__grid {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+
+        #{{ section_id }}-recipes .product-recipes-tab__title {
+          font-size: 16px;
+        }
+      }
+    </style>
+
+    <div class="product-recipes-tab__grid">
+      {%- for blog_metaobject in recipes -%}
+        {%- assign blog_url = blog_metaobject.blog_url -%}
+        {%- if blog_url != blank -%}
+          {%- assign url_parts = blog_url | split: '/' -%}
+          {%- assign blog_handle = '' -%}
+          {%- assign article_handle = '' -%}
+
+          {%- if url_parts.size >= 6 -%}
+            {%- assign blog_handle = url_parts[4] -%}
+            {%- assign article_handle = url_parts[5] | split: '?' | first -%}
+          {%- elsif url_parts.size >= 4 -%}
+            {%- assign blog_handle = url_parts[2] -%}
+            {%- assign article_handle = url_parts[3] | split: '?' | first -%}
+          {%- endif -%}
+
+          {%- assign blog = blogs[blog_handle] -%}
+          {%- assign blog_article = null -%}
+
+          {%- if blog -%}
+            {%- paginate blog.articles by 50 -%}
+              {%- for article in blog.articles -%}
+                {%- assign cleaned_handle = article.handle | split: '/' | last -%}
+                {%- if cleaned_handle == article_handle -%}
+                  {%- assign blog_article = article -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endpaginate -%}
+          {%- endif -%}
+
+          {%- if blog_article -%}
+            <a href="{{ blog_article.url }}" class="product-recipes-tab__card">
+              <div class="product-recipes-tab__image">
+                {%- if blog_article.image -%}
+                  <img
+                    src="{{ blog_article.image | image_url: width: 700 }}"
+                    alt="{{ blog_article.title | escape }}"
+                    width="700"
+                    height="467"
+                    loading="lazy"
+                  >
+                {%- else -%}
+                  <span class="product-recipes-tab__placeholder">&#xf15c;</span>
+                {%- endif -%}
+              </div>
+
+              <h3 class="product-recipes-tab__title">{{ blog_article.title }}</h3>
+            </a>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}

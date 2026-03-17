@@ -1,0 +1,621 @@
+{% doc %}
+  @prompt
+    ingredients list, move ingredients header to middle and make H4
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-ingredients-list-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: {{ block.settings.padding_vertical }}px {{ block.settings.padding_horizontal }}px;
+    background-color: {{ block.settings.background_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+  }
+
+  .ai-ingredients-list__header-{{ ai_gen_id }} {
+    margin-bottom: {{ block.settings.header_spacing }}px;
+    text-align: center;
+  }
+
+  .ai-ingredients-list__title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.title_font.family }}, {{ block.settings.title_font.fallback_families }};
+    font-weight: {{ block.settings.title_font.weight }};
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.title_color }};
+    margin: 0 0 8px 0;
+    text-transform: {{ block.settings.title_transform }};
+    letter-spacing: 0.05em;
+  }
+
+  .ai-ingredients-list__subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: {{ block.settings.subtitle_color }};
+    margin: 0;
+    font-style: italic;
+  }
+
+  .ai-ingredients-list__items-{{ ai_gen_id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat({{ block.settings.columns_desktop }}, 1fr);
+    gap: {{ block.settings.item_spacing }}px;
+  }
+
+  .ai-ingredients-list__item-{{ ai_gen_id }} {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: {{ block.settings.item_padding }}px 0;
+    border-bottom: {{ block.settings.show_dividers }}px solid {{ block.settings.divider_color }};
+  }
+
+  .ai-ingredients-list__item-{{ ai_gen_id }}:last-child {
+    border-bottom: none;
+  }
+
+  .ai-ingredients-list__bullet-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    width: {{ block.settings.bullet_size }}px;
+    height: {{ block.settings.bullet_size }}px;
+    margin-top: 4px;
+  }
+
+  .ai-ingredients-list__bullet-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    fill: {{ block.settings.bullet_color }};
+  }
+
+  .ai-ingredients-list__content-{{ ai_gen_id }} {
+    flex: 1;
+  }
+
+  .ai-ingredients-list__name-{{ ai_gen_id }} {
+    font-size: {{ block.settings.ingredient_size }}px;
+    color: {{ block.settings.ingredient_color }};
+    font-weight: {{ block.settings.ingredient_weight }};
+    margin: 0 0 4px 0;
+  }
+
+  .ai-ingredients-list__amount-{{ ai_gen_id }} {
+    font-size: {{ block.settings.amount_size }}px;
+    color: {{ block.settings.amount_color }};
+    margin: 0;
+  }
+
+  .ai-ingredients-list__notes-{{ ai_gen_id }} {
+    margin-top: {{ block.settings.notes_spacing }}px;
+    padding-top: {{ block.settings.notes_spacing }}px;
+    border-top: 1px solid {{ block.settings.divider_color }};
+    font-size: {{ block.settings.notes_size }}px;
+    color: {{ block.settings.notes_color }};
+    font-style: italic;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-ingredients-list__items-{{ ai_gen_id }} {
+      grid-template-columns: repeat({{ block.settings.columns_mobile }}, 1fr);
+    }
+
+    .ai-ingredients-list__title-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.title_size }}px * 0.85);
+    }
+
+    .ai-ingredients-list-{{ ai_gen_id }} {
+      padding: {{ block.settings.padding_vertical | times: 0.7 }}px {{ block.settings.padding_horizontal | times: 0.7 }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-ingredients-list-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% if block.settings.title != blank or block.settings.subtitle != blank %}
+    <div class="ai-ingredients-list__header-{{ ai_gen_id }}">
+      {% if block.settings.title != blank %}
+        <h4 class="ai-ingredients-list__title-{{ ai_gen_id }}">{{ block.settings.title }}</h4>
+      {% endif %}
+      {% if block.settings.subtitle != blank %}
+        <p class="ai-ingredients-list__subtitle-{{ ai_gen_id }}">{{ block.settings.subtitle }}</p>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <ul class="ai-ingredients-list__items-{{ ai_gen_id }}">
+    {% for i in (1..12) %}
+      {% assign ingredient_key = 'ingredient_' | append: i %}
+      {% assign amount_key = 'amount_' | append: i %}
+      {% assign ingredient = block.settings[ingredient_key] %}
+      {% assign amount = block.settings[amount_key] %}
+      
+      {% if ingredient != blank %}
+        <li class="ai-ingredients-list__item-{{ ai_gen_id }}">
+          <div class="ai-ingredients-list__bullet-{{ ai_gen_id }}">
+            {% if block.settings.bullet_style == 'check' %}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            {% elsif block.settings.bullet_style == 'dot' %}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="4"></circle>
+              </svg>
+            {% elsif block.settings.bullet_style == 'dash' %}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            {% endif %}
+          </div>
+          <div class="ai-ingredients-list__content-{{ ai_gen_id }}">
+            <p class="ai-ingredients-list__name-{{ ai_gen_id }}">{{ ingredient }}</p>
+            {% if amount != blank %}
+              <p class="ai-ingredients-list__amount-{{ ai_gen_id }}">{{ amount }}</p>
+            {% endif %}
+          </div>
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+
+  {% if block.settings.notes != blank %}
+    <div class="ai-ingredients-list__notes-{{ ai_gen_id }}">
+      {{ block.settings.notes }}
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Ingredients list",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Ingredients"
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Title font",
+      "default": "montserrat_n6"
+    },
+    {
+      "type": "select",
+      "id": "title_transform",
+      "label": "Title casing",
+      "options": [
+        {
+          "value": "none",
+          "label": "Normal"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        },
+        {
+          "value": "lowercase",
+          "label": "Lowercase"
+        }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#000000"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Subtitle size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "header_spacing",
+      "label": "Header spacing",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 25
+    },
+    {
+      "type": "header",
+      "content": "Ingredients"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_1",
+      "label": "Ingredient 1"
+    },
+    {
+      "type": "text",
+      "id": "amount_1",
+      "label": "Amount 1"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_2",
+      "label": "Ingredient 2"
+    },
+    {
+      "type": "text",
+      "id": "amount_2",
+      "label": "Amount 2"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_3",
+      "label": "Ingredient 3"
+    },
+    {
+      "type": "text",
+      "id": "amount_3",
+      "label": "Amount 3"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_4",
+      "label": "Ingredient 4"
+    },
+    {
+      "type": "text",
+      "id": "amount_4",
+      "label": "Amount 4"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_5",
+      "label": "Ingredient 5"
+    },
+    {
+      "type": "text",
+      "id": "amount_5",
+      "label": "Amount 5"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_6",
+      "label": "Ingredient 6"
+    },
+    {
+      "type": "text",
+      "id": "amount_6",
+      "label": "Amount 6"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_7",
+      "label": "Ingredient 7"
+    },
+    {
+      "type": "text",
+      "id": "amount_7",
+      "label": "Amount 7"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_8",
+      "label": "Ingredient 8"
+    },
+    {
+      "type": "text",
+      "id": "amount_8",
+      "label": "Amount 8"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_9",
+      "label": "Ingredient 9"
+    },
+    {
+      "type": "text",
+      "id": "amount_9",
+      "label": "Amount 9"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_10",
+      "label": "Ingredient 10"
+    },
+    {
+      "type": "text",
+      "id": "amount_10",
+      "label": "Amount 10"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_11",
+      "label": "Ingredient 11"
+    },
+    {
+      "type": "text",
+      "id": "amount_11",
+      "label": "Amount 11"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_12",
+      "label": "Ingredient 12"
+    },
+    {
+      "type": "text",
+      "id": "amount_12",
+      "label": "Amount 12"
+    },
+    {
+      "type": "header",
+      "content": "Notes"
+    },
+    {
+      "type": "richtext",
+      "id": "notes",
+      "label": "Additional notes"
+    },
+    {
+      "type": "range",
+      "id": "notes_size",
+      "label": "Notes text size",
+      "min": 11,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "color",
+      "id": "notes_color",
+      "label": "Notes color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "notes_spacing",
+      "label": "Notes spacing",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "select",
+      "id": "bullet_style",
+      "label": "Bullet style",
+      "options": [
+        {
+          "value": "check",
+          "label": "Check mark"
+        },
+        {
+          "value": "dot",
+          "label": "Dot"
+        },
+        {
+          "value": "dash",
+          "label": "Dash"
+        }
+      ],
+      "default": "check"
+    },
+    {
+      "type": "range",
+      "id": "bullet_size",
+      "label": "Bullet size",
+      "min": 12,
+      "max": 28,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "bullet_color",
+      "label": "Bullet color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "ingredient_size",
+      "label": "Ingredient text size",
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "select",
+      "id": "ingredient_weight",
+      "label": "Ingredient weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "600",
+          "label": "Semi-bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "color",
+      "id": "ingredient_color",
+      "label": "Ingredient color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "amount_size",
+      "label": "Amount text size",
+      "min": 11,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "color",
+      "id": "amount_color",
+      "label": "Amount color",
+      "default": "#666666"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dividers",
+      "label": "Show dividers",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "range",
+      "id": "item_padding",
+      "label": "Item padding",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "item_spacing",
+      "label": "Column spacing",
+      "min": 15,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "label": "Vertical padding",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ingredients list"
+    }
+  ]
+}
+{% endschema %}

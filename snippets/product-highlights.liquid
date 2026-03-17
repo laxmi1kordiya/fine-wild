@@ -1,0 +1,105 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+PRODUCT HIGHLIGHTS
+----------------------------------------------------------------------------------------------------------------------
+Renders a list of product highlight items from the custom.product_highlights metafield.
+Each metaobject has: image (file) and highlight_text (single_line_text).
+
+Supported variables:
+* product: the product to pull metafields from
+* block: the block settings
+----------------------------------------------------------------------------------------------------------------------
+{%- endcomment -%}
+
+{%- assign highlights_metafield = product.metafields.custom.product_highlights -%}
+
+{%- if highlights_metafield != blank and highlights_metafield.value.size > 0 -%}
+  <div class="product-highlights" {{ block.shopify_attributes }}>
+    {%- if block.settings.heading != blank -%}
+      <p class="product-highlights__heading">{{ block.settings.heading }}</p>
+    {%- endif -%}
+
+    {%- assign cols_desktop = block.settings.columns_desktop | default: 1 -%}
+    {%- assign cols_mobile = block.settings.columns_mobile | default: 1 -%}
+    <div class="product-highlights__list" style="--cols-desktop: {{ cols_desktop }}; --cols-mobile: {{ cols_mobile }};"">
+      {%- for highlight in highlights_metafield.value -%}
+        {%- if highlight.highlight_text.value != blank -%}
+          <div class="product-highlights__item">
+            {%- if highlight.image.value != blank -%}
+              <div class="product-highlights__icon">
+                {{ highlight.image.value | image_url: width: 80 | image_tag: loading: 'lazy', width: 40, height: 40 }}
+              </div>
+            {%- endif -%}
+            <div class="product-highlights__text">
+              <p class="product-highlights__title">{{ highlight.highlight_text.value }}</p>
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <style>
+    .product-highlights {
+      {% comment %} border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      overflow: hidden; {% endcomment %}
+    }
+
+    .product-highlights__heading {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0;
+      {% comment %} padding: 16px 16px 0; {% endcomment %}
+      color: #111;
+    }
+
+    .product-highlights__list {
+      padding: 12px 0px 0px;
+      display: grid;
+      grid-template-columns: repeat(var(--cols-mobile, 1), 1fr);
+      {% comment %} gap: 8px; {% endcomment %}
+    }
+
+    @media screen and (min-width: 700px) {
+      .product-highlights__list {
+        grid-template-columns: repeat(var(--cols-desktop, 1), 1fr);
+      }
+    }
+
+    .product-highlights__item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 5px 0;
+    }
+
+    .product-highlights__icon {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-highlights__icon img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+
+    .product-highlights__text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .product-highlights__title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #111;
+      margin: 0;
+      line-height: 1.4;
+    }
+  </style>
+{%- endif -%}

@@ -1,0 +1,791 @@
+{% doc %}
+  @prompt
+    make a step section upto 10 all with the ability to add a square image that works well in desktop and mobile 
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-steps-section-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    padding: {{ block.settings.section_padding }}px 0;
+  }
+
+  .ai-steps-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-steps-header-{{ ai_gen_id }} {
+    text-align: {{ block.settings.text_alignment }};
+    margin-bottom: {{ block.settings.header_spacing }}px;
+  }
+
+  .ai-steps-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.title_color }};
+    margin: 0 0 16px 0;
+    font-family: {{ block.settings.title_font.family }}, {{ block.settings.title_font.fallback_families }};
+    font-weight: {{ block.settings.title_font.weight }};
+  }
+
+  .ai-steps-description-{{ ai_gen_id }} {
+    font-size: {{ block.settings.description_size }}px;
+    color: {{ block.settings.description_color }};
+    margin: 0;
+  }
+
+  .ai-steps-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat({{ block.settings.columns_desktop }}, 1fr);
+    gap: {{ block.settings.grid_gap }}px;
+    margin-top: {{ block.settings.grid_spacing }}px;
+  }
+
+  .ai-step-item-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.step_content_gap }}px;
+  }
+
+  .ai-step-image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: {{ block.settings.image_border_radius }}px;
+    background-color: {{ block.settings.image_placeholder_bg }};
+  }
+
+  .ai-step-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-step-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: {{ block.settings.image_placeholder_bg }};
+  }
+
+  .ai-step-image-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.3;
+  }
+
+  .ai-step-number-{{ ai_gen_id }} {
+    position: absolute;
+    top: {{ block.settings.number_position_top }}px;
+    left: {{ block.settings.number_position_left }}px;
+    width: {{ block.settings.number_size }}px;
+    height: {{ block.settings.number_size }}px;
+    background-color: {{ block.settings.number_bg_color }};
+    color: {{ block.settings.number_text_color }};
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: {{ block.settings.number_font_size }}px;
+  }
+
+  .ai-step-content-{{ ai_gen_id }} {
+    text-align: {{ block.settings.step_text_alignment }};
+  }
+
+  .ai-step-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.step_title_size }}px;
+    color: {{ block.settings.step_title_color }};
+    margin: 0 0 8px 0;
+    font-weight: 600;
+  }
+
+  .ai-step-description-{{ ai_gen_id }} {
+    font-size: {{ block.settings.step_description_size }}px;
+    color: {{ block.settings.step_description_color }};
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-steps-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat({{ block.settings.columns_mobile }}, 1fr);
+    }
+
+    .ai-steps-title-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.title_size }}px * 0.8);
+    }
+
+    .ai-step-title-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.step_title_size }}px * 0.9);
+    }
+
+    .ai-step-description-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.step_description_size }}px * 0.9);
+    }
+  }
+{% endstyle %}
+
+<div class="ai-steps-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-steps-container-{{ ai_gen_id }}">
+    {% if block.settings.section_title != blank or block.settings.section_description != blank %}
+      <div class="ai-steps-header-{{ ai_gen_id }}">
+        {% if block.settings.section_title != blank %}
+          <h2 class="ai-steps-title-{{ ai_gen_id }}">{{ block.settings.section_title }}</h2>
+        {% endif %}
+        {% if block.settings.section_description != blank %}
+          <div class="ai-steps-description-{{ ai_gen_id }}">{{ block.settings.section_description }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="ai-steps-grid-{{ ai_gen_id }}">
+      {% for i in (1..10) %}
+        {% liquid
+          assign step_enabled_key = 'step_' | append: i | append: '_enabled'
+          assign step_image_key = 'step_' | append: i | append: '_image'
+          assign step_title_key = 'step_' | append: i | append: '_title'
+          assign step_description_key = 'step_' | append: i | append: '_description'
+
+          assign step_enabled = block.settings[step_enabled_key]
+          assign step_image = block.settings[step_image_key]
+          assign step_title = block.settings[step_title_key]
+          assign step_description = block.settings[step_description_key]
+        %}
+
+        {% if step_enabled %}
+          <div class="ai-step-item-{{ ai_gen_id }}">
+            <div class="ai-step-image-wrapper-{{ ai_gen_id }}">
+              {% if step_image %}
+                <img
+                  src="{{ step_image | image_url: width: 800 }}"
+                  alt="{{ step_image.alt | escape }}"
+                  loading="lazy"
+                  width="800"
+                  height="800"
+                  class="ai-step-image-{{ ai_gen_id }}"
+                >
+              {% else %}
+                <div class="ai-step-image-placeholder-{{ ai_gen_id }}">
+                  {{ 'image' | placeholder_svg_tag }}
+                </div>
+              {% endif %}
+              {% if block.settings.show_step_numbers %}
+                <div class="ai-step-number-{{ ai_gen_id }}">{{ i }}</div>
+              {% endif %}
+            </div>
+            <div class="ai-step-content-{{ ai_gen_id }}">
+              {% if step_title != blank %}
+                <h3 class="ai-step-title-{{ ai_gen_id }}">{{ step_title }}</h3>
+              {% endif %}
+              {% if step_description != blank %}
+                <div class="ai-step-description-{{ ai_gen_id }}">{{ step_description }}</div>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Step section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Title",
+      "default": "How it works"
+    },
+    {
+      "type": "textarea",
+      "id": "section_description",
+      "label": "Description",
+      "default": "Follow these simple steps to get started"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Header alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Section padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Gap between steps",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "header_spacing",
+      "label": "Header bottom spacing",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "grid_spacing",
+      "label": "Grid top spacing",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Step styling"
+    },
+    {
+      "type": "range",
+      "id": "step_content_gap",
+      "label": "Gap between image and text",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "step_text_alignment",
+      "label": "Step text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "label": "Image border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "image_placeholder_bg",
+      "label": "Image placeholder background",
+      "default": "#f4f4f4"
+    },
+    {
+      "type": "header",
+      "content": "Step numbers"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_step_numbers",
+      "label": "Show step numbers",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "number_size",
+      "label": "Number circle size",
+      "min": 30,
+      "max": 70,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "number_font_size",
+      "label": "Number font size",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "number_position_top",
+      "label": "Number position from top",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "number_position_left",
+      "label": "Number position from left",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "number_bg_color",
+      "label": "Number background color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "number_text_color",
+      "label": "Number text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Section title font",
+      "default": "helvetica_n4"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Section title size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Section title color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Section description size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Section description color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "step_title_size",
+      "label": "Step title size",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "step_title_color",
+      "label": "Step title color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "step_description_size",
+      "label": "Step description size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "step_description_color",
+      "label": "Step description color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Step 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "step_1_enabled",
+      "label": "Enable step 1",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "step_1_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "step_1_title",
+      "label": "Title",
+      "default": "Step 1"
+    },
+    {
+      "type": "textarea",
+      "id": "step_1_description",
+      "label": "Description",
+      "default": "Add a description for this step"
+    },
+    {
+      "type": "header",
+      "content": "Step 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "step_2_enabled",
+      "label": "Enable step 2",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "step_2_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "step_2_title",
+      "label": "Title",
+      "default": "Step 2"
+    },
+    {
+      "type": "textarea",
+      "id": "step_2_description",
+      "label": "Description",
+      "default": "Add a description for this step"
+    },
+    {
+      "type": "header",
+      "content": "Step 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "step_3_enabled",
+      "label": "Enable step 3",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "step_3_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "step_3_title",
+      "label": "Title",
+      "default": "Step 3"
+    },
+    {
+      "type": "textarea",
+      "id": "step_3_description",
+      "label": "Description",
+      "default": "Add a description for this step"
+    },
+    {
+      "type": "header",
+      "content": "Step 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "step_4_enabled",
+      "label": "Enable step 4",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "step_4_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "step_4_title",
+      "label": "Title",
+      "default": "Step 4"
+    },
+    {
+      "type": "textarea",
+      "id": "step_4_description",
+      "label": "Description",
+      "default": "Add a description for this step"
+    },
+    {
+      "type": "header",
+      "content": "Step 5"
+    },
+    {
+      "type": "checkbox",
+      "id": "step_5_enabled",
+      "label": "Enable step 5",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "step_5_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "step_5_title",
+      "label": "Title",
+      "default": "Step 5"
+    },
+    {
+      "type": "textarea",
+      "id": "step_5_description",
+      "label": "Description",
+      "default": "Add a description for this step"
+    },
+    {
+      "type": "header",
+      "content": "Step 6"
+    },
+    {
+      "type": "checkbox",
+      "id": "step_6_enabled",
+      "label": "Enable step 6",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "step_6_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "step_6_title",
+      "label": "Title",
+      "default": "Step 6"
+    },
+    {
+      "type": "textarea",
+      "id": "step_6_description",
+      "label": "Description",
+      "default": "Add a description for this step"
+    },
+    {
+      "type": "header",
+      "content": "Step 7"
+    },
+    {
+      "type": "checkbox",
+      "id": "step_7_enabled",
+      "label": "Enable step 7",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "step_7_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "step_7_title",
+      "label": "Title",
+      "default": "Step 7"
+    },
+    {
+      "type": "textarea",
+      "id": "step_7_description",
+      "label": "Description",
+      "default": "Add a description for this step"
+    },
+    {
+      "type": "header",
+      "content": "Step 8"
+    },
+    {
+      "type": "checkbox",
+      "id": "step_8_enabled",
+      "label": "Enable step 8",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "step_8_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "step_8_title",
+      "label": "Title",
+      "default": "Step 8"
+    },
+    {
+      "type": "textarea",
+      "id": "step_8_description",
+      "label": "Description",
+      "default": "Add a description for this step"
+    },
+    {
+      "type": "header",
+      "content": "Step 9"
+    },
+    {
+      "type": "checkbox",
+      "id": "step_9_enabled",
+      "label": "Enable step 9",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "step_9_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "step_9_title",
+      "label": "Title",
+      "default": "Step 9"
+    },
+    {
+      "type": "textarea",
+      "id": "step_9_description",
+      "label": "Description",
+      "default": "Add a description for this step"
+    },
+    {
+      "type": "header",
+      "content": "Step 10"
+    },
+    {
+      "type": "checkbox",
+      "id": "step_10_enabled",
+      "label": "Enable step 10",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "step_10_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "step_10_title",
+      "label": "Title",
+      "default": "Step 10"
+    },
+    {
+      "type": "textarea",
+      "id": "step_10_description",
+      "label": "Description",
+      "default": "Add a description for this step"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Step section"
+    }
+  ]
+}
+{% endschema %}

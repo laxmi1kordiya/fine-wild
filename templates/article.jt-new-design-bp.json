@@ -1,0 +1,282 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-article",
+      "disabled": true,
+      "settings": {
+        "color_scheme": "scheme-2",
+        "show_image": true,
+        "enable_parallax": true,
+        "image_size": "medium",
+        "content_width": "xs",
+        "show_date": false,
+        "show_category": false,
+        "show_author": false,
+        "show_share_buttons": true,
+        "show_sticky_bar": true,
+        "toolbar_color_scheme": ""
+      }
+    },
+    "blocks_WRTr6F": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_39f8b04_UkDQg4": {
+          "type": "ai_gen_block_39f8b04",
+          "settings": {
+            "hero_image": "shopify://shop_images/untitled-3_5e0065ff-cd96-4bcb-a985-32fe92279fab.jpg",
+            "mobile_image": "shopify://shop_images/1770198815583-2024-07-11.webp",
+            "image_border_radius": 0,
+            "recipe_title": "Wagyu Beef Wellington",
+            "recipe_description": "<p>An elegant and luxurious dish featuring premium Wagyu beef wrapped in golden puff pastry with a rich mushroom duxelles.</p>",
+            "servings": "4",
+            "prep_time": "30 min",
+            "cook_time": "45 min",
+            "total_time": "75 min",
+            "ingredient_1": "800g Wagyu beef fillet",
+            "ingredient_2": "500g puff pastry",
+            "ingredient_3": "300g mushrooms, finely chopped",
+            "ingredient_4": "2 shallots, finely diced",
+            "ingredient_5": "3 cloves garlic, minced",
+            "ingredient_6": "",
+            "ingredient_7": "",
+            "ingredient_8": "",
+            "ingredient_9": "",
+            "ingredient_10": "",
+            "ingredient_11": "",
+            "ingredient_12": "",
+            "ingredient_13": "",
+            "ingredient_14": "",
+            "ingredient_15": "",
+            "ingredient_16": "",
+            "ingredient_17": "",
+            "ingredient_18": "",
+            "ingredient_19": "",
+            "ingredient_20": "",
+            "desktop_width_percent": 90,
+            "heading_font": "montserrat_n6",
+            "heading_text_transform": "uppercase",
+            "heading_letter_spacing": 19,
+            "heading_size": 30,
+            "section_heading_size": 34,
+            "body_font": "nunito_sans_n4",
+            "body_size": 16,
+            "text_color": "#000000",
+            "meta_box_background": "#ffffff",
+            "meta_box_border_color": "#e0e0e0",
+            "meta_label_color": "#666666",
+            "meta_box_border_radius": 8,
+            "ingredients_background": "#f9f9f9",
+            "ingredients_border_color": "#e0e0e0",
+            "ingredients_border_radius": 8,
+            "ingredient_divider_color": "#e0e0e0",
+            "bullet_color": "#000000"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_39f8b04_UkDQg4"
+      ],
+      "name": "Recipe blog post",
+      "settings": {}
+    },
+    "video_4nM77N": {
+      "type": "video",
+      "blocks": {
+        "play_hmUNmL": {
+          "type": "play",
+          "settings": {
+            "icon_color": "#ffffff"
+          }
+        },
+        "heading_xfcbg7": {
+          "type": "heading",
+          "disabled": true,
+          "settings": {
+            "text": "Video",
+            "heading_tag": "h2"
+          }
+        }
+      },
+      "block_order": [
+        "play_hmUNmL",
+        "heading_xfcbg7"
+      ],
+      "disabled": true,
+      "name": "t:sections.video.presets.video.name",
+      "settings": {
+        "autoplay": false,
+        "show_controls": true,
+        "video_size": "md",
+        "external_video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+        "text_color": "#ffffff"
+      }
+    },
+    "prev-next-blog-posts": {
+      "type": "prev-next-blog-posts",
+      "disabled": true,
+      "settings": {
+        "color_scheme": "",
+        "separate_section_with_border": false,
+        "subheading": "",
+        "title": "Read more",
+        "show_category": false,
+        "show_excerpt": true,
+        "show_read_more": true
+      }
+    },
+    "17703098698ec1f3f3": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_381d6c0_XMKrxe": {
+          "type": "ai_gen_block_381d6c0",
+          "settings": {
+            "collection": "wagyu-sukiyaki-ingredients",
+            "products_to_show": 4,
+            "heading": "Featured products",
+            "heading_size": 24,
+            "heading_alignment": "center",
+            "heading_spacing": 25,
+            "products_per_row_desktop": 4,
+            "products_per_row_mobile": "2",
+            "grid_gap": 20,
+            "section_padding": 40,
+            "desktop_width_percent": 100,
+            "product_title_size": 12,
+            "show_vendor": false,
+            "show_badges": false,
+            "show_quick_add": true,
+            "add_to_cart_text": "Add",
+            "heading_color": "#000000",
+            "text_color": "#000000",
+            "sale_price_color": "#e32c2b",
+            "button_background": "#000000",
+            "button_text_color": "#ffffff",
+            "button_hover_background": "#333333",
+            "badge_background": "#000000",
+            "badge_text_color": "#ffffff"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_381d6c0_XMKrxe"
+      ],
+      "name": "RELATED ",
+      "settings": {}
+    },
+    "17703109725a1a857d": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_5e79b23_P3t4VR": {
+          "type": "ai_gen_block_5e79b23",
+          "settings": {
+            "section_title": "How it works",
+            "section_description": "Follow these simple steps to get started",
+            "text_alignment": "center",
+            "columns_desktop": 3,
+            "columns_mobile": "1",
+            "desktop_width_percent": 100,
+            "max_width": 1200,
+            "section_padding": 40,
+            "grid_gap": 30,
+            "header_spacing": 40,
+            "grid_spacing": 20,
+            "step_content_gap": 20,
+            "step_text_alignment": "left",
+            "image_border_radius": 8,
+            "image_placeholder_bg": "#f4f4f4",
+            "show_step_numbers": true,
+            "number_size": 50,
+            "number_font_size": 20,
+            "number_position_top": 16,
+            "number_position_left": 16,
+            "number_bg_color": "#000000",
+            "number_text_color": "#ffffff",
+            "title_font": "sans_serif_n4",
+            "title_size": 36,
+            "title_color": "#000000",
+            "description_size": 16,
+            "description_color": "#666666",
+            "step_title_size": 20,
+            "step_title_color": "#000000",
+            "step_description_size": 14,
+            "step_description_color": "#666666",
+            "step_1_enabled": true,
+            "step_1_title": "Step 1",
+            "step_1_description": "Add a description for this step",
+            "step_2_enabled": true,
+            "step_2_title": "Step 2",
+            "step_2_description": "Add a description for this step",
+            "step_3_enabled": true,
+            "step_3_title": "Step 3",
+            "step_3_description": "Add a description for this step",
+            "step_4_enabled": false,
+            "step_4_title": "Step 4",
+            "step_4_description": "Add a description for this step",
+            "step_5_enabled": false,
+            "step_5_title": "Step 5",
+            "step_5_description": "Add a description for this step",
+            "step_6_enabled": false,
+            "step_6_title": "Step 6",
+            "step_6_description": "Add a description for this step",
+            "step_7_enabled": false,
+            "step_7_title": "Step 7",
+            "step_7_description": "Add a description for this step",
+            "step_8_enabled": false,
+            "step_8_title": "Step 8",
+            "step_8_description": "Add a description for this step",
+            "step_9_enabled": false,
+            "step_9_title": "Step 9",
+            "step_9_description": "Add a description for this step",
+            "step_10_enabled": false,
+            "step_10_title": "Step 10",
+            "step_10_description": "Add a description for this step"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_5e79b23_P3t4VR"
+      ],
+      "name": "STEPS",
+      "settings": {}
+    },
+    "recently_viewed_products_mhGckU": {
+      "type": "recently-viewed-products",
+      "disabled": true,
+      "settings": {
+        "separate_section_with_border": true,
+        "color_scheme": "scheme-2",
+        "hide_product_information": false,
+        "stack_products": false,
+        "products_count": 9,
+        "products_per_row_mobile": "2",
+        "products_per_row_desktop": 4,
+        "horizontal_spacing_factor": 1,
+        "vertical_spacing_factor": 1,
+        "subheading": "",
+        "title": "Recently viewed products",
+        "content": ""
+      }
+    }
+  },
+  "order": [
+    "main",
+    "blocks_WRTr6F",
+    "video_4nM77N",
+    "prev-next-blog-posts",
+    "17703098698ec1f3f3",
+    "17703109725a1a857d",
+    "recently_viewed_products_mhGckU"
+  ]
+}
