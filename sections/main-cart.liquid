@@ -68,9 +68,9 @@
 
                     <td class="text-end">
                       {%- if settings.currency_code_enabled -%}
-                        {{- line_item.final_line_price | money_with_currency -}}
+                        <span class="bcpo-cart-item-line-price" data-key="{{line_item.key}}">{{ line_item.final_price | money_with_currency }}</span>
                       {%- else -%}
-                        {{- line_item.final_line_price | money -}}
+                        <span class="bcpo-cart-item-line-price" data-key="{{line_item.key}}">{{ line_item.final_price | money }}</span>
                       {%- endif -%}
                     </td>
                   </tr>
@@ -106,9 +106,9 @@
                     <span class="text-subdued">{{ 'cart.general.subtotal' | t }}:</span>
                     <span class="text-subdued">
                       {%- if settings.currency_code_enabled -%}
-                        {{- cart.items_subtotal_price | money_with_currency -}}
+                        <span class="bcpo-cart-original-total">{{ cart.items_subtotal_price | money_with_currency }}</span>
                       {%- else -%}
-                        {{- cart.items_subtotal_price | money -}}
+                        <span class="bcpo-cart-original-total">{{ cart.items_subtotal_price | money }}</span>
                       {%- endif -%}
                     </span>
                   </div>
@@ -123,7 +123,7 @@
 
                 <div class="h-stack justify-start gap-2">
                   <span class="text-lg">{{ 'cart.general.total' | t }}:</span>
-                  <span class="text-lg">{{- cart.total_price | money_with_currency -}}</span>
+                  <span class="text-lg"><span class="bcpo-cart-original-total">{{ cart.total_price | money_with_currency }}</span></span>
                 </div>
 
                 {%- if section.settings.show_shipping_text -%}
@@ -227,3 +227,4 @@
   ]
 }
 {% endschema %}
+<!-- bcpo done -->
