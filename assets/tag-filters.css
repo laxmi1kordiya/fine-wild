@@ -1,0 +1,132 @@
+.tag-filters {
+  margin-top: 8px;
+}
+
+.tag-filter-group {
+  padding: 4px 0;
+}
+
+.tag-filter-item {
+  padding: 3px 0;
+}
+
+.tag-filter-item--hidden {
+  display: none;
+}
+
+/* Links inside filter items */
+.tag-filter-item a,
+.tag-filter-disabled-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  transition: opacity 0.2s;
+  padding: 5px 0;
+}
+
+.tag-filter-item a:hover {
+  opacity: 0.7;
+}
+
+/* Active state - bold text and colored */
+.tag-filter-item--active a {
+  font-weight: 600;
+}
+
+/* Disabled state - greyed out, no pointer */
+.tag-filter-item--disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.tag-filter-disabled-link {
+  cursor: default;
+}
+
+/* Checkbox styling */
+.tag-filter-checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border: 2px solid #c0c0c0;
+  border-radius: 4px;
+  background: transparent;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+/* Checked checkbox - filled with accent color */
+.tag-filter-checkbox--checked {
+  background-color: #c41e3a;
+  border-color: #c41e3a;
+  color: #ffffff;
+}
+
+/* Label */
+.tag-filter-label {
+  flex: 1;
+}
+
+/* Product count */
+.tag-filter-count {
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 13px;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* See more / See less toggle */
+.tag-filter-toggle {
+  background: none;
+  border: none;
+  padding: 8px 0 2px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c41e3a;
+  text-decoration: none;
+}
+
+.tag-filter-toggle:hover {
+  text-decoration: underline;
+}
+
+/* Active filter badges - above product grid */
+.tag-filters-active {
+  margin-bottom: 16px;
+}
+
+.tag-filters-active a {
+  text-decoration: none;
+}
+
+.tag-filter-active-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: #c41e3a;
+  color: #ffffff;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.tag-filter-active-badge:hover {
+  background: #a3182f;
+}
+
+.tag-filter-badge-x {
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.9;
+}

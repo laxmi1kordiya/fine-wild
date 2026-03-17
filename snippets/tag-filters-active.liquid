@@ -1,0 +1,51 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+TAG FILTERS - ACTIVE BADGES
+----------------------------------------------------------------------------------------------------------------------
+
+Displays active tag filter badges above the product grid.
+Shows "Group - Value" format with remove (X) button.
+
+********************************************
+Supported variables
+********************************************
+
+* collection: the collection object
+{%- endcomment -%}
+
+{%- if current_tags.size > 0 -%}
+  <div class="tag-filters-active">
+    <div class="h-stack wrap gap-2">
+      {%- for tag in current_tags -%}
+        {%- assign tag_parts = tag | split: '_' -%}
+        {%- assign tag_group_name = tag_parts[0] | capitalize -%}
+        {%- assign tag_value = '' -%}
+        {%- for part in tag_parts -%}
+          {%- if forloop.first -%}
+            {%- continue -%}
+          {%- endif -%}
+          {%- if tag_value != '' -%}
+            {%- assign tag_value = tag_value | append: ' ' -%}
+          {%- endif -%}
+          {%- assign tag_value = tag_value | append: part -%}
+        {%- endfor -%}
+        {%- assign tag_value = tag_value | capitalize -%}
+
+        {%- capture remove_label -%}
+          <span class="tag-filter-active-badge">
+            {{ tag_group_name }} - {{ tag_value }}
+            <span class="tag-filter-badge-x">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="6" cy="6" r="5.5" stroke="currentColor"/>
+                <path d="M4 4L8 8M8 4L4 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </span>
+          </span>
+        {%- endcapture -%}
+        {{ remove_label | link_to_remove_tag: tag }}
+      {%- endfor -%}
+
+      <a href="{{ collection.url }}" class="tag-filter-clear-all">Clear all</a>
+    </div>
+  </div>
+{%- endif -%}

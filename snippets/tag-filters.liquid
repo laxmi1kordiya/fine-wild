@@ -1,0 +1,158 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+TAG-BASED FILTERS
+----------------------------------------------------------------------------------------------------------------------
+
+Displays filter groups based on product tag prefixes (e.g., origin_english, variety_green).
+Tags are grouped by prefix and displayed as clickable filter links.
+URLs use Shopify's tag filtering format: /collections/handle/tag1+tag2+tag3
+
+Features:
+- Product count per filter value
+- See more / See less toggle (first 5 visible)
+- Checkbox UI with active state
+- Disabled state for 0 product values
+- Active filter badges with group name prefix
+- Auto-open accordion when group has active filter
+
+********************************************
+Supported variables
+********************************************
+
+* collection: the collection object
+* filter_groups: comma-separated list of tag prefixes to use as filter groups (e.g., "origin,variety,quality,season")
+* open_by_default: if true, all filter groups are expanded by default
+{%- endcomment -%}
+
+{%- assign filter_prefixes = filter_groups | split: ',' -%}
+{%- assign max_visible = 5 -%}
+
+{%- comment -%}Filter groups{%- endcomment -%}
+{%- for prefix in filter_prefixes -%}
+  {%- assign prefix_stripped = prefix | strip -%}
+  {%- assign prefix_with_underscore = prefix_stripped | append: '_' -%}
+  {%- assign filter_tags = '' -%}
+  {%- assign filter_count = 0 -%}
+  {%- assign group_has_active = false -%}
+
+  {%- for tag in collection.all_tags -%}
+    {%- assign tag_handle = tag | handle -%}
+    {%- assign prefix_handle = prefix_with_underscore | handle -%}
+
+    {%- assign tag_prefix_check = tag_handle | slice: 0, prefix_handle.size -%}
+    {%- if tag_prefix_check == prefix_handle -%}
+      {%- if tag_handle.size > prefix_handle.size -%}
+        {%- if filter_count > 0 -%}
+          {%- assign filter_tags = filter_tags | append: '|||' -%}
+        {%- endif -%}
+        {%- assign filter_tags = filter_tags | append: tag -%}
+        {%- assign filter_count = filter_count | plus: 1 -%}
+
+        {%- if current_tags contains tag -%}
+          {%- assign group_has_active = true -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- if filter_count > 0 -%}
+    {%- assign filter_title = prefix_stripped | capitalize -%}
+    {%- assign tag_items = filter_tags | split: '|||' -%}
+    {%- assign group_id = prefix_stripped | handle | prepend: 'tag-group-' -%}
+
+    {%- comment -%}Auto-open if group has active filter{%- endcomment -%}
+    {%- assign should_open = open_by_default -%}
+    {%- if group_has_active -%}
+      {%- assign should_open = true -%}
+    {%- endif -%}
+
+    {%- capture filter_content -%}
+      <div class="v-stack gap-1 tag-filter-group" id="{{ group_id }}">
+        {%- for tag in tag_items -%}
+          {%- comment -%}Extract the label after the prefix underscore{%- endcomment -%}
+          {%- assign tag_parts = tag | split: '_' -%}
+          {%- assign tag_label = '' -%}
+          {%- for part in tag_parts -%}
+            {%- if forloop.first -%}
+              {%- continue -%}
+            {%- endif -%}
+            {%- if tag_label != '' -%}
+              {%- assign tag_label = tag_label | append: ' ' -%}
+            {%- endif -%}
+            {%- assign tag_label = tag_label | append: part -%}
+          {%- endfor -%}
+          {%- assign tag_label = tag_label | capitalize -%}
+
+          {%- assign is_active = false -%}
+          {%- if current_tags contains tag -%}
+            {%- assign is_active = true -%}
+          {%- endif -%}
+
+          {%- comment -%}Count products with this tag{%- endcomment -%}
+          {%- assign product_count = 0 -%}
+          {%- for product in collection.products -%}
+            {%- if product.tags contains tag -%}
+              {%- assign product_count = product_count | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- comment -%}Build label with checkbox and count{%- endcomment -%}
+          {%- capture tag_label_with_count -%}
+            <span class="tag-filter-checkbox {% if is_active %}tag-filter-checkbox--checked{% endif %}">
+              {%- if is_active -%}
+                <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 3.5L3.5 6L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              {%- endif -%}
+            </span>
+            <span class="tag-filter-label">{{ tag_label }}</span>
+            <span class="tag-filter-count">({{ product_count }})</span>
+          {%- endcapture -%}
+
+          <div class="tag-filter-item {% if forloop.index > max_visible %}tag-filter-item--hidden{% endif %} {% if is_active %}tag-filter-item--active{% endif %} {% if product_count == 0 and is_active == false %}tag-filter-item--disabled{% endif %}" {% if forloop.index > max_visible %}data-tag-hidden{% endif %}>
+            {%- if product_count == 0 and is_active == false -%}
+              <span class="tag-filter-disabled-link">{{ tag_label_with_count }}</span>
+            {%- elsif is_active -%}
+              {{ tag_label_with_count | link_to_remove_tag: tag }}
+            {%- else -%}
+              {{ tag_label_with_count | link_to_add_tag: tag }}
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+
+        {%- if filter_count > max_visible -%}
+          <button type="button" class="tag-filter-toggle" data-tag-toggle onclick="toggleTagFilters(this)">
+            <span class="tag-filter-toggle-more">See more</span>
+            <span class="tag-filter-toggle-less" style="display:none;">See less</span>
+          </button>
+        {%- endif -%}
+      </div>
+    {%- endcapture -%}
+
+    {%- render 'accordion', title: filter_title, content: filter_content, open: should_open, show_arrow: true -%}
+  {%- endif -%}
+{%- endfor -%}
+
+<script>
+  function toggleTagFilters(btn) {
+    var group = btn.closest('.tag-filter-group');
+    var hiddenItems = group.querySelectorAll('[data-tag-hidden]');
+    var moreText = btn.querySelector('.tag-filter-toggle-more');
+    var lessText = btn.querySelector('.tag-filter-toggle-less');
+    var isExpanded = btn.getAttribute('data-expanded') === 'true';
+
+    hiddenItems.forEach(function(item) {
+      item.classList.toggle('tag-filter-item--hidden');
+    });
+
+    if (isExpanded) {
+      moreText.style.display = '';
+      lessText.style.display = 'none';
+      btn.setAttribute('data-expanded', 'false');
+    } else {
+      moreText.style.display = 'none';
+      lessText.style.display = '';
+      btn.setAttribute('data-expanded', 'true');
+    }
+  }
+</script>

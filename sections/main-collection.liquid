@@ -17,6 +17,13 @@
     assign show_filters = false
   endif
 
+  assign show_tag_filters = section.settings.show_tag_filters
+  assign tag_filter_groups = section.settings.tag_filter_groups
+
+  if show_tag_filters and tag_filter_groups != blank
+    assign show_filters = true
+  endif
+
   # First, we retrieve, based on the merchant settings, the user preferences and the available space the most appropriate size
   assign products_mobile_grid_mode = cart.attributes.products_mobile_grid_mode
 
@@ -204,6 +211,12 @@ LIQUID
 
                 {%- render 'facets', results: collection, show_filters: section.settings.show_filters, open_filters_by_default: section.settings.open_filters_by_default, update_on_change: false, quick_links_menu: section.settings.quick_links_menu, context: 'drawer' -%}
 
+                {%- if show_tag_filters and tag_filter_groups != blank -%}
+                  <div class="accordion-list tag-filters">
+                    {%- render 'tag-filters', collection: collection, filter_groups: tag_filter_groups, open_by_default: section.settings.open_filters_by_default -%}
+                  </div>
+                {%- endif -%}
+
                 <div slot="footer">
                   {%- assign button_content = 'collection.faceting.apply_filters' | t -%}
 
@@ -216,6 +229,12 @@ LIQUID
               {%- if section.settings.filter_layout == 'sidebar' -%}
                 <safe-sticky class="facets-sidebar md-max:hidden">
                   {%- render 'facets', results: collection, show_filters: section.settings.show_filters, open_filters_by_default: section.settings.open_filters_by_default, update_on_change: true, quick_links_menu: section.settings.quick_links_menu, context: 'sidebar' -%}
+
+                  {%- if show_tag_filters and tag_filter_groups != blank -%}
+                    <div class="accordion-list tag-filters">
+                      {%- render 'tag-filters', collection: collection, filter_groups: tag_filter_groups, open_by_default: section.settings.open_filters_by_default -%}
+                    </div>
+                  {%- endif -%}
                 </safe-sticky>
               {%- endif -%}
             {%- endif -%}
@@ -235,6 +254,7 @@ LIQUID
             {%- else -%}
               <div class="collection__main">
                 {%- render 'active-facets', results: collection -%}
+                {%- render 'tag-filters-active', collection: collection -%}
 
                 <product-list id="product-list-{{ section.id }}" class="product-list" collection-mobile-layout="{{ products_mobile_grid_mode }}" collection-desktop-layout="{{ products_desktop_grid_mode }}">
                   {%- for product in collection.products -%}
@@ -439,6 +459,24 @@ LIQUID
       "id": "open_filters_by_default",
       "label": "t:global.faceting.open_filters_by_default",
       "default": false
+    },
+    {
+      "type": "header",
+      "content": "Tag-based filters"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tag_filters",
+      "label": "Show tag filters",
+      "info": "Display filters based on product tag prefixes (e.g., origin_english, variety_green)",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "tag_filter_groups",
+      "label": "Filter groups",
+      "info": "Comma-separated tag prefixes (e.g., origin,variety,quality,season)",
+      "default": "origin,variety,quality,season"
     }
   ]
 }
