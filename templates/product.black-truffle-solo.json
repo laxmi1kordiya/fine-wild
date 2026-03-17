@@ -36,7 +36,7 @@
         "autoplay": true,
         "show_controls": false,
         "video_size": "md",
-        "video": "shopify://files/videos/F&W Risotto 8.2.25.mp4",
+        "video": "",
         "external_video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
         "text_color": "#ffffff"
       }
@@ -504,7 +504,7 @@
         "autoplay": true,
         "show_controls": false,
         "video_size": "md",
-        "video": "shopify://files/videos/FINE & WILD TRUFFLE HUNTING.mp4",
+        "video": "",
         "external_video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
         "text_color": "#ffffff"
       }
