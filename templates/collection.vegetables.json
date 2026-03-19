@@ -1,0 +1,141 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "collection-banner": {
+      "type": "collection-banner",
+      "settings": {
+        "color_scheme": "scheme-3",
+        "image_size": "md",
+        "allow_transparent_header": false,
+        "reveal": true,
+        "enable_parallax": true,
+        "show_image": true,
+        "show_collection_title": true,
+        "show_collection_description": true,
+        "show_breadcrumb": true,
+        "content_width": "xs",
+        "overlay_color": "#000000",
+        "overlay_opacity": 20
+      }
+    },
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "color_scheme": "scheme-2",
+        "show_collection_title": false,
+        "collection_title_alignment": "start",
+        "hide_product_information": false,
+        "products_per_page": 48,
+        "products_per_row_mobile": "2",
+        "products_size_desktop": "large",
+        "show_grid_mode_selector": false,
+        "horizontal_spacing_factor": 0.5,
+        "vertical_spacing_factor": 0.5,
+        "filter_layout": "sidebar",
+        "quick_links_menu": "",
+        "show_sort_by": false,
+        "show_filters": false,
+        "show_results_count": false,
+        "show_filter_group_name": false,
+        "show_filter_values_count": false,
+        "open_filters_by_default": false,
+        "show_tag_filters": true,
+        "tag_filter_groups": "category"
+      }
+    },
+    "collection_banner_t7xc9U": {
+      "type": "collection-banner",
+      "custom_css": [
+        ".section-spacing {padding: inherit;}"
+      ],
+      "name": "Collection banner",
+      "settings": {
+        "color_scheme": "",
+        "image_size": "auto",
+        "allow_transparent_header": false,
+        "reveal": false,
+        "enable_parallax": false,
+        "show_image": false,
+        "show_collection_title": false,
+        "show_collection_description": true,
+        "show_breadcrumb": false,
+        "content_width": "xl",
+        "overlay_color": "#000000",
+        "overlay_opacity": 30
+      }
+    },
+    "recently_viewed_products_CyWPhK": {
+      "type": "recently-viewed-products",
+      "settings": {
+        "separate_section_with_border": false,
+        "color_scheme": "scheme-2",
+        "hide_product_information": true,
+        "stack_products": false,
+        "products_count": 9,
+        "products_per_row_mobile": "2",
+        "products_per_row_desktop": 4,
+        "horizontal_spacing_factor": 1,
+        "vertical_spacing_factor": 1,
+        "subheading": "Recently viewed products",
+        "title": "",
+        "content": ""
+      }
+    },
+    "17726214932d39f946": {
+      "type": "apps",
+      "blocks": {
+        "webrex_ai_seo_optimizer_faq_section_RkcpaN": {
+          "type": "shopify://apps/webrex-ai-seo-optimizer/blocks/FAQSection/b26797ad-bb4d-48f5-8ef3-7c561521049c",
+          "settings": {
+            "section_align": "align-center",
+            "max_width": 800,
+            "box_border": 4,
+            "faq_border_thickness": 1,
+            "faq_border_color": "#dddddd",
+            "faq_border_style": "solid",
+            "icon_color": "#333333",
+            "top_margin": 20,
+            "bottom_margin": 20,
+            "top_padding": 20,
+            "bottom_padding": 20,
+            "left_padding": 20,
+            "right_padding": 20,
+            "heading_title": "Frequently asked questions",
+            "heading_align": "center",
+            "heading_font_size": 20,
+            "heading_color": "#000000",
+            "question_color": "#000000",
+            "question_font_size": 16,
+            "answer_color": "#666666",
+            "answer_font_size": 14,
+            "hover_color": "#228b22"
+          }
+        }
+      },
+      "block_order": [
+        "webrex_ai_seo_optimizer_faq_section_RkcpaN"
+      ],
+      "settings": {
+        "color_scheme": "scheme-2",
+        "separate_section_with_border": true,
+        "remove_vertical_spacing": false,
+        "remove_horizontal_spacing": false
+      }
+    }
+  },
+  "order": [
+    "collection-banner",
+    "main",
+    "collection_banner_t7xc9U",
+    "recently_viewed_products_CyWPhK",
+    "17726214932d39f946"
+  ]
+}
