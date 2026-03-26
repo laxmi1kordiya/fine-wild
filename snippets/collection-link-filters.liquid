@@ -3,9 +3,22 @@
 COLLECTION LINK FILTERS
 ----------------------------------------------------------------------------------------------------------------------
 
-Displays filter groups using Shopify navigation menus.
-Each menu becomes an accordion filter group in the sidebar.
-Manage links dynamically from Shopify Admin > Navigation.
+Uses a single nested navigation menu to display collection link filters.
+Automatically detects the current collection and shows the correct level.
+
+Menu structure example:
+  FRESH & SEASONAL (root)
+  ├── Vegetables → shows as filter on Fresh & Seasonal
+  │   ├── Asparagus → shows as filter on Vegetables
+  │   ├── Tomatoes
+  │   └── ...
+  ├── Fruits
+  │   ├── Citrus
+  │   └── ...
+  └── Mushrooms
+
+- On Fresh & Seasonal: shows Vegetables, Fruits, Herbs, Mushrooms
+- On Vegetables: shows Asparagus, Artichokes, Tomatoes, etc.
 
 ********************************************
 Supported variables
@@ -14,20 +27,59 @@ Supported variables
 * open_by_default: if true, all filter groups are expanded by default
 {%- endcomment -%}
 
-{%- for i in (1..5) -%}
-  {%- assign menu_key = 'collection_link_filter_' | append: i | append: '_menu' -%}
-  {%- assign menu = section.settings[menu_key] -%}
+{%- assign menu = section.settings.collection_link_filter_menu -%}
 
-  {%- if menu.links.size > 0 -%}
+{%- if menu.links.size > 0 -%}
+  {%- comment -%}Check if current collection matches any top-level link{%- endcomment -%}
+  {%- assign matched_parent = false -%}
+
+  {%- for parent_link in menu.links -%}
+    {%- if parent_link.url contains collection.handle -%}
+      {%- comment -%}Current collection is a top-level item — show its children{%- endcomment -%}
+      {%- if parent_link.links.size > 0 -%}
+        {%- assign matched_parent = true -%}
+
+        {%- capture filter_content -%}
+          <div class="v-stack gap-2.5">
+            {%- for child_link in parent_link.links -%}
+              <a href="{{ child_link.url }}" class="{% if child_link.active or child_link.url contains collection.handle %}text-bold{% else %}link-faded{% endif %}">
+                {{- child_link.title -}}
+              </a>
+            {%- endfor -%}
+          </div>
+        {%- endcapture -%}
+
+        {%- render 'accordion', title: parent_link.title, content: filter_content, open: open_by_default, show_arrow: true -%}
+      {%- endif -%}
+    {%- else -%}
+      {%- comment -%}Check if current collection matches any child link{%- endcomment -%}
+      {%- for child_link in parent_link.links -%}
+        {%- if child_link.url contains collection.handle -%}
+          {%- assign matched_parent = true -%}
+
+          {%- capture filter_content -%}
+            <div class="v-stack gap-2.5">
+              {%- for sibling_link in parent_link.links -%}
+                <a href="{{ sibling_link.url }}" class="{% if sibling_link.url contains collection.handle %}text-bold{% else %}link-faded{% endif %}">
+                  {{- sibling_link.title -}}
+                </a>
+              {%- endfor -%}
+            </div>
+          {%- endcapture -%}
+
+          {%- render 'accordion', title: parent_link.title, content: filter_content, open: true, show_arrow: true -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- unless matched_parent -%}
+    {%- comment -%}No match found — show top-level links (e.g., on Fresh & Seasonal){%- endcomment -%}
     {%- capture filter_content -%}
       <div class="v-stack gap-2.5">
         {%- for link in menu.links -%}
-          {%- assign is_current = false -%}
-          {%- if link.url contains collection.handle -%}
-            {%- assign is_current = true -%}
-          {%- endif -%}
-
-          <a href="{{ link.url }}" class="{% if is_current or link.active %}text-bold{% else %}link-faded{% endif %}">
+          <a href="{{ link.url }}" class="{% if link.active %}text-bold{% else %}link-faded{% endif %}">
             {{- link.title -}}
           </a>
         {%- endfor -%}
@@ -35,5 +87,5 @@ Supported variables
     {%- endcapture -%}
 
     {%- render 'accordion', title: menu.title, content: filter_content, open: open_by_default, show_arrow: true -%}
-  {%- endif -%}
-{%- endfor -%}
+  {%- endunless -%}
+{%- endif -%}

@@ -502,34 +502,14 @@ LIQUID
       "type": "checkbox",
       "id": "show_collection_link_filters",
       "label": "Show collection link filters",
-      "info": "Display navigation menus as filter groups that link to other collections",
+      "info": "Display a nested navigation menu as collection filters. Auto-detects the current level.",
       "default": false
     },
     {
       "type": "link_list",
-      "id": "collection_link_filter_1_menu",
-      "label": "Filter menu 1",
-      "info": "Select a navigation menu. Menu title = filter heading, menu links = filter options."
-    },
-    {
-      "type": "link_list",
-      "id": "collection_link_filter_2_menu",
-      "label": "Filter menu 2"
-    },
-    {
-      "type": "link_list",
-      "id": "collection_link_filter_3_menu",
-      "label": "Filter menu 3"
-    },
-    {
-      "type": "link_list",
-      "id": "collection_link_filter_4_menu",
-      "label": "Filter menu 4"
-    },
-    {
-      "type": "link_list",
-      "id": "collection_link_filter_5_menu",
-      "label": "Filter menu 5"
+      "id": "collection_link_filter_menu",
+      "label": "Collection filter menu",
+      "info": "Select a nested menu. Top-level items show on the parent collection, child items show on sub-collections."
     }
   ]
 }
