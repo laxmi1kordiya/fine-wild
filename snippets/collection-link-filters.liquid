@@ -6,19 +6,16 @@ COLLECTION LINK FILTERS
 Uses a single nested navigation menu to display collection link filters.
 Automatically detects the current collection and shows the correct level.
 
-Menu structure example:
-  FRESH & SEASONAL (root)
-  ├── Vegetables → shows as filter on Fresh & Seasonal
-  │   ├── Asparagus → shows as filter on Vegetables
+Menu structure (3 levels):
+  FRESH & SEASONAL (level 1)
+  ├── Vegetables (level 2) → shows on Fresh & Seasonal page
+  │   ├── Asparagus (level 3) → shows on Vegetables page
   │   ├── Tomatoes
   │   └── ...
-  ├── Fruits
-  │   ├── Citrus
+  ├── Fruits (level 2)
+  │   ├── Citrus (level 3) → shows on Fruits page
   │   └── ...
-  └── Mushrooms
-
-- On Fresh & Seasonal: shows Vegetables, Fruits, Herbs, Mushrooms
-- On Vegetables: shows Asparagus, Artichokes, Tomatoes, etc.
+  └── Mushrooms (level 2)
 
 ********************************************
 Supported variables
@@ -30,62 +27,78 @@ Supported variables
 {%- assign menu = section.settings.collection_link_filter_menu -%}
 
 {%- if menu.links.size > 0 -%}
-  {%- comment -%}Check if current collection matches any top-level link{%- endcomment -%}
-  {%- assign matched_parent = false -%}
+  {%- assign matched = false -%}
 
-  {%- for parent_link in menu.links -%}
-    {%- if parent_link.url contains collection.handle -%}
-      {%- comment -%}Current collection is a top-level item — show its children{%- endcomment -%}
-      {%- if parent_link.links.size > 0 -%}
-        {%- assign matched_parent = true -%}
+  {%- for level1 in menu.links -%}
+    {%- comment -%}Level 1: e.g., FRESH & SEASONAL{%- endcomment -%}
 
-        {%- capture filter_content -%}
-          <div class="v-stack gap-2.5">
-            {%- for child_link in parent_link.links -%}
-              <a href="{{ child_link.url }}" class="{% if child_link.active or child_link.url contains collection.handle %}text-bold{% else %}link-faded{% endif %}">
-                {{- child_link.title -}}
-              </a>
-            {%- endfor -%}
-          </div>
-        {%- endcapture -%}
+    {%- for level2 in level1.links -%}
+      {%- comment -%}Level 2: e.g., Vegetables, Fruits, Herbs, Mushrooms{%- endcomment -%}
 
-        {%- render 'accordion', title: parent_link.title, content: filter_content, open: open_by_default, show_arrow: true -%}
-      {%- endif -%}
-    {%- else -%}
-      {%- comment -%}Check if current collection matches any child link{%- endcomment -%}
-      {%- for child_link in parent_link.links -%}
-        {%- if child_link.url contains collection.handle -%}
-          {%- assign matched_parent = true -%}
+      {%- comment -%}Check if current collection matches a level 2 item → show its children (level 3){%- endcomment -%}
+      {%- if level2.url contains collection.handle -%}
+        {%- if level2.links.size > 0 -%}
+          {%- assign matched = true -%}
 
           {%- capture filter_content -%}
             <div class="v-stack gap-2.5">
-              {%- for sibling_link in parent_link.links -%}
-                <a href="{{ sibling_link.url }}" class="{% if sibling_link.url contains collection.handle %}text-bold{% else %}link-faded{% endif %}">
-                  {{- sibling_link.title -}}
+              {%- for level3 in level2.links -%}
+                <a href="{{ level3.url }}" class="{% if level3.url contains collection.handle %}text-bold{% else %}link-faded{% endif %}">
+                  {{- level3.title -}}
                 </a>
               {%- endfor -%}
             </div>
           {%- endcapture -%}
 
-          {%- render 'accordion', title: parent_link.title, content: filter_content, open: true, show_arrow: true -%}
+          {%- render 'accordion', title: level2.title, content: filter_content, open: open_by_default, show_arrow: true -%}
+        {%- endif -%}
+        {%- break -%}
+      {%- endif -%}
+
+      {%- comment -%}Check if current collection matches a level 3 item → show siblings{%- endcomment -%}
+      {%- for level3 in level2.links -%}
+        {%- if level3.url contains collection.handle -%}
+          {%- assign matched = true -%}
+
+          {%- capture filter_content -%}
+            <div class="v-stack gap-2.5">
+              {%- for sibling in level2.links -%}
+                <a href="{{ sibling.url }}" class="{% if sibling.url contains collection.handle %}text-bold{% else %}link-faded{% endif %}">
+                  {{- sibling.title -}}
+                </a>
+              {%- endfor -%}
+            </div>
+          {%- endcapture -%}
+
+          {%- render 'accordion', title: level2.title, content: filter_content, open: true, show_arrow: true -%}
           {%- break -%}
         {%- endif -%}
       {%- endfor -%}
-    {%- endif -%}
+
+      {%- if matched -%}
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- comment -%}Check if current collection matches level 1 → show level 2 children{%- endcomment -%}
+    {%- unless matched -%}
+      {%- if level1.url contains collection.handle -%}
+        {%- if level1.links.size > 0 -%}
+          {%- assign matched = true -%}
+
+          {%- capture filter_content -%}
+            <div class="v-stack gap-2.5">
+              {%- for level2 in level1.links -%}
+                <a href="{{ level2.url }}" class="{% if level2.url contains collection.handle %}text-bold{% else %}link-faded{% endif %}">
+                  {{- level2.title -}}
+                </a>
+              {%- endfor -%}
+            </div>
+          {%- endcapture -%}
+
+          {%- render 'accordion', title: level1.title, content: filter_content, open: open_by_default, show_arrow: true -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endunless -%}
   {%- endfor -%}
-
-  {%- unless matched_parent -%}
-    {%- comment -%}No match found — show top-level links (e.g., on Fresh & Seasonal){%- endcomment -%}
-    {%- capture filter_content -%}
-      <div class="v-stack gap-2.5">
-        {%- for link in menu.links -%}
-          <a href="{{ link.url }}" class="{% if link.active %}text-bold{% else %}link-faded{% endif %}">
-            {{- link.title -}}
-          </a>
-        {%- endfor -%}
-      </div>
-    {%- endcapture -%}
-
-    {%- render 'accordion', title: menu.title, content: filter_content, open: open_by_default, show_arrow: true -%}
-  {%- endunless -%}
 {%- endif -%}
