@@ -40,7 +40,7 @@
         "horizontal_spacing_factor": 0.5,
         "vertical_spacing_factor": 0.5,
         "filter_layout": "sidebar",
-        "quick_links_menu": "webrex-new-menu-test",
+        "quick_links_menu": "",
         "show_sort_by": false,
         "show_filters": false,
         "show_results_count": false,
@@ -49,7 +49,8 @@
         "open_filters_by_default": false,
         "show_tag_filters": true,
         "tag_filter_groups": "origin,variety,quality,season",
-        "show_collection_link_filters": true
+        "show_collection_link_filters": true,
+        "collection_link_filter_menu": "webrex-new-menu-test"
       }
     },
     "collection_banner_t7xc9U": {
