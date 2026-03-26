@@ -24,6 +24,10 @@
     assign show_filters = true
   endif
 
+  if section.settings.show_collection_link_filters
+    assign show_filters = true
+  endif
+
   # First, we retrieve, based on the merchant settings, the user preferences and the available space the most appropriate size
   assign products_mobile_grid_mode = cart.attributes.products_mobile_grid_mode
 
@@ -217,6 +221,12 @@ LIQUID
                   </div>
                 {%- endif -%}
 
+                {%- if section.settings.show_collection_link_filters -%}
+                  <div class="accordion-list">
+                    {%- render 'collection-link-filters', open_by_default: section.settings.open_filters_by_default -%}
+                  </div>
+                {%- endif -%}
+
                 <div slot="footer">
                   {%- assign button_content = 'collection.faceting.apply_filters' | t -%}
 
@@ -233,6 +243,12 @@ LIQUID
                   {%- if show_tag_filters and tag_filter_groups != blank -%}
                     <div class="accordion-list tag-filters">
                       {%- render 'tag-filters', collection: collection, filter_groups: tag_filter_groups, open_by_default: section.settings.open_filters_by_default -%}
+                    </div>
+                  {%- endif -%}
+
+                  {%- if section.settings.show_collection_link_filters -%}
+                    <div class="accordion-list">
+                      {%- render 'collection-link-filters', open_by_default: section.settings.open_filters_by_default -%}
                     </div>
                   {%- endif -%}
                 </safe-sticky>
@@ -477,6 +493,43 @@ LIQUID
       "label": "Filter groups",
       "info": "Comma-separated tag prefixes (e.g., origin,variety,quality,season)",
       "default": "origin,variety,quality,season"
+    },
+    {
+      "type": "header",
+      "content": "Collection link filters"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_link_filters",
+      "label": "Show collection link filters",
+      "info": "Display navigation menus as filter groups that link to other collections",
+      "default": false
+    },
+    {
+      "type": "link_list",
+      "id": "collection_link_filter_1_menu",
+      "label": "Filter menu 1",
+      "info": "Select a navigation menu. Menu title = filter heading, menu links = filter options."
+    },
+    {
+      "type": "link_list",
+      "id": "collection_link_filter_2_menu",
+      "label": "Filter menu 2"
+    },
+    {
+      "type": "link_list",
+      "id": "collection_link_filter_3_menu",
+      "label": "Filter menu 3"
+    },
+    {
+      "type": "link_list",
+      "id": "collection_link_filter_4_menu",
+      "label": "Filter menu 4"
+    },
+    {
+      "type": "link_list",
+      "id": "collection_link_filter_5_menu",
+      "label": "Filter menu 5"
     }
   ]
 }

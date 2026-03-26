@@ -48,7 +48,8 @@
         "show_filter_values_count": false,
         "open_filters_by_default": false,
         "show_tag_filters": true,
-        "tag_filter_groups": "origin,variety,quality,season,vegetables,fruits,herbs,mushrooms"
+        "tag_filter_groups": "origin,variety,quality,season",
+        "show_collection_link_filters": true
       }
     },
     "collection_banner_t7xc9U": {

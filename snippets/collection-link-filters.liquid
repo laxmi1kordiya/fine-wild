@@ -1,0 +1,39 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+COLLECTION LINK FILTERS
+----------------------------------------------------------------------------------------------------------------------
+
+Displays filter groups using Shopify navigation menus.
+Each menu becomes an accordion filter group in the sidebar.
+Manage links dynamically from Shopify Admin > Navigation.
+
+********************************************
+Supported variables
+********************************************
+
+* open_by_default: if true, all filter groups are expanded by default
+{%- endcomment -%}
+
+{%- for i in (1..5) -%}
+  {%- assign menu_key = 'collection_link_filter_' | append: i | append: '_menu' -%}
+  {%- assign menu = section.settings[menu_key] -%}
+
+  {%- if menu.links.size > 0 -%}
+    {%- capture filter_content -%}
+      <div class="v-stack gap-2.5">
+        {%- for link in menu.links -%}
+          {%- assign is_current = false -%}
+          {%- if link.url contains collection.handle -%}
+            {%- assign is_current = true -%}
+          {%- endif -%}
+
+          <a href="{{ link.url }}" class="{% if is_current or link.active %}text-bold{% else %}link-faded{% endif %}">
+            {{- link.title -}}
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- endcapture -%}
+
+    {%- render 'accordion', title: menu.title, content: filter_content, open: open_by_default, show_arrow: true -%}
+  {%- endif -%}
+{%- endfor -%}
