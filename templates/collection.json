@@ -40,7 +40,7 @@
         "horizontal_spacing_factor": 0.5,
         "vertical_spacing_factor": 0.5,
         "filter_layout": "sidebar",
-        "quick_links_menu": "",
+        "quick_links_menu": "webrex-new-menu-test",
         "show_sort_by": false,
         "show_filters": false,
         "show_results_count": false,
@@ -48,7 +48,13 @@
         "show_filter_values_count": false,
         "open_filters_by_default": false,
         "show_tag_filters": true,
-        "tag_filter_groups": "origin,variety,quality,season"
+        "tag_filter_groups": "origin,variety,quality,season",
+        "show_collection_link_filters": false,
+        "collection_link_filter_1_menu": "",
+        "collection_link_filter_2_menu": "",
+        "collection_link_filter_3_menu": "",
+        "collection_link_filter_4_menu": "",
+        "collection_link_filter_5_menu": ""
       }
     },
     "collection_banner_t7xc9U": {
